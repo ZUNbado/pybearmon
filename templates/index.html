@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>ACS Status Page</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container">
+            <h1>ACS Status: Estat dels serveis</h1>
+
+            <div class="all-services bg-success">
+                <h4 style="padding: 8px;">Tots els serveis funcionen correctament</h4>
+            </div>
+
+            <div class="all-services bg-danger">
+                <h4 style="padding: 8px;">Alguns serveis no funcionen actualment</h4>
+            </div>
+
+            <div class="service">
+                <h2>
+                    <i class="glyphicon glyphicon-ok-sign" style="color: green;"></i>
+                    <a>mail.acs.li</a>
+                </h2>
+            </div>
+
+            <div class="service">
+                <h2>
+                    <i class="glyphicon glyphicon-remove-sign" style="color: red;"></i>
+                    <a>web.acs.li</a>
+                </h2>
+            </div>
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    </body>
+</html>
