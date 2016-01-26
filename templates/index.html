@@ -21,19 +21,16 @@
                 <h4 style="padding: 8px;">Alguns serveis no funcionen actualment</h4>
             </div>
 
+            {% for check in checks %}
             <div class="service">
                 <h2>
-                    <i class="glyphicon glyphicon-ok-sign" style="color: green;"></i>
+                        <i 
+                                class="glyphicon glyphicon-{% if check.status == 'online' %}ok{% else %}remove{% endif %}-sign" 
+                                style="color: {% if check.status == 'online' %}green{% else %}red{% endif %};"></i>
                     <a>mail.acs.li</a>
                 </h2>
             </div>
-
-            <div class="service">
-                <h2>
-                    <i class="glyphicon glyphicon-remove-sign" style="color: red;"></i>
-                    <a>web.acs.li</a>
-                </h2>
-            </div>
+            {% endfor %}
         </div>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
