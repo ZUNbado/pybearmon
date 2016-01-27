@@ -27,3 +27,7 @@ class Checks(object):
         if check:
             return check
         return False
+
+    def getAll(self):
+        checks = self.db.getAll('checks')
+        return checks if checks else []

@@ -25,6 +25,16 @@ def checks_edit(id = None):
                 form.data.data = dbcheck.data
     return menu.render('checks/edit.html', form = form)
 
+@menu.add('List', '/checks', 'Checks')
+@app.route('/checks')
+def checks_list():
+    checks = Checks().getAll()
+    return menu.render('checks/list.html', items = checks )
+
+@app.route('/checks/delete/<int:id>')
+def checks_delete(id):
+    return redirect(url_for('checks_list'))
+
 
 @app.route('/')
 def index():
