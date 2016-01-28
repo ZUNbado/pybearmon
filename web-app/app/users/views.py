@@ -15,7 +15,7 @@ def users_list():
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
-@register_menu(app, '.users.users_edit', 'Edit')
+@register_menu(app, '.users.users_edit', 'Add')
 def users_edit(id = None):
     form = UserForm(request.form)
     if request.method == 'POST' and form.validate():
