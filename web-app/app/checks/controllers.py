@@ -1,4 +1,4 @@
-from common.sql import getdb
+from app.common.sql import getdb
 
 class Checks(object):
     def __init__(self):

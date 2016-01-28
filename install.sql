@@ -5,3 +5,12 @@ CREATE TABLE alerts (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, check_id INT NO
 
 -- data tables
 CREATE TABLE check_events (id INT NOT NULL PRIMARY KEY AUTO_INCREMENT, check_id INT NOT NULL, type ENUM ('up', 'down'), time TIMESTAMP DEFAULT CURRENT_TIMESTAMP);
+
+-- user table
+CREATE TABLE IF NOT EXISTS `users` (
+     `id` int(11) NOT NULL AUTO_INCREMENT,
+     `name` varchar(255) NOT NULL,
+     `email` varchar(255) NOT NULL,
+     `password` varchar(255) NOT NULL,
+     PRIMARY KEY (`id`)
+   ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;

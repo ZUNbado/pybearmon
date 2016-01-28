@@ -27,8 +27,8 @@
                     <td>{{ item.last_locked }}</td>
                     <td>
                             <ul>
-                                    <li><a href="{{ url_for('checks_edit', id = item.id) }}">Edit</a></li>
-                                    <li><a href="{{ url_for('checks_delete', id = item.id) }}">Delete</a></li>
+                                    <li><a href="{{ url_for('.checks_edit', id = item.id) }}">Edit</a></li>
+                                    <li><a href="{{ url_for('.checks_delete', id = item.id) }}">Delete</a></li>
                             </ul>
                     </td>
             </tr>
