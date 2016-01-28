@@ -1,4 +1,5 @@
 from app.common.sql import getdb
+from flask.ext.login import UserMixin
 
 class Users(object):
     def __init__(self):
@@ -31,3 +32,40 @@ class Users(object):
     def getAll(self):
         users = self.db.getAll('users')
         return users if users else []
+
+    def login(self, email, password):
+        user = self.db.getOne('users', '*', ( 'email = %s AND password = %s', [ email, password ]))
+        if user:
+            return user
+        return False
+
+class LoginUser(UserMixin):
+    def __init__(self, email=None, password=None, active=True, id=None):
+        self.email = email
+        self.password = password
+        self.active = active
+        self.isAdmin = False
+        self.id = None
+
+    def get_by_id(self, user_id):
+        user = Users().get(user_id)
+        if user:
+            return LoginUser(user.email, user.password, id = user.id)
+        return False
+
+    def is_authenticated(self):
+        user = Users().login(self.email, self.password)
+        if user:
+            self.user = user
+            return True
+        return False
+
+    def is_active(self):
+        if self.is_authenticated():
+            self.active = True
+            return True
+        return False
+
+    def get_id(self):
+        if self.is_active():
+            return unicode(self.user.id)
