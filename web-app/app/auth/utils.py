@@ -5,3 +5,6 @@ def user_logged():
 
 def user_anonymous():
     return not current_user.is_active()
+
+def user_admin():
+    return current_user.is_admin()

@@ -10,6 +10,8 @@ class Config(object):
     MYSQL_PASSWORD = ''
     MYSQL_DATABASE = 'monitor'
 
+    SECRET_KEY = 'secret key here'
+
 class Development(Config):
     pass
 

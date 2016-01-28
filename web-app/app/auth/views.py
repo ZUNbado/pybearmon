@@ -2,7 +2,7 @@ from flask import Flask, flash, Blueprint, request, redirect, url_for, render_te
 from flask.ext.menu import Menu, register_menu
 from flask.ext.login import login_required, login_user, current_user, logout_user
 
-from app.common.auth import user_logged, user_anonymous
+from .utils import user_logged, user_anonymous
 
 from app.users.controllers import LoginUser
 from .forms import LoginForm

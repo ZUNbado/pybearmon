@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="table-responsive">
+    <table class="table">
+            <tr>
+                    <th>Name</th>
+            </tr>
+            {% for item in items %}
+            <tr>
+                    <td>{{ item.name }}</td>
+                    <td>
+                            <ul>
+                                    <li><a href="{{ url_for('.checktype_edit', id = item.id) }}">Edit</a></li>
+                                    <li><a href="{{ url_for('.checktype_delete', id = item.id) }}">Delete</a></li>
+                            </ul>
+                    </td>
+            </tr>
+            {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

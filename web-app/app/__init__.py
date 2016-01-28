@@ -20,6 +20,9 @@ app.register_blueprint(users_view)
 from app.auth.views import app as auth_view
 app.register_blueprint(auth_view)
 
+from app.check_type.views import app as checktype_view
+app.register_blueprint(checktype_view)
+
 
 @app.route('/')
 def index():

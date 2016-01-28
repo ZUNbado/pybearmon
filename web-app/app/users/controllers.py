@@ -44,7 +44,6 @@ class LoginUser(UserMixin):
         self.email = email
         self.password = password
         self.active = active
-        self.isAdmin = False
         self.id = None
 
     def get_by_id(self, user_id):
@@ -62,8 +61,15 @@ class LoginUser(UserMixin):
 
     def is_active(self):
         if self.is_authenticated():
-            self.active = True
-            return True
+            self.active = self.user.is_active
+            if self.active:
+                return True
+        return False
+
+    def is_admin(self):
+        if self.is_active():
+            if self.user.is_admin:
+                return True
         return False
 
     def get_id(self):
