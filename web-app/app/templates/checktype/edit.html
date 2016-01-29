@@ -9,10 +9,32 @@
     <button type="submit" class="btn btn-default">Submit</button>
 </form>
 {% if attrs %}
-
-{{ attrs }}
+<h3>Current attributes of check type</h3>
+<div class="table-responsive">
+<table class="table">
+   <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Required</th>
+      <th>Actions</th>
+   </tr>
+   {% for attr in attrs %}
+   <tr>
+      <td>{{ attr.name }}</td>
+      <td>{{ attr.type }}</td>
+      <td>{% if attr.required %}Yes{% else %}No{% endif %}</td>
+      <td>
+         <ul>
+            <li><a href="{{ url_for('.checkattribute_edit', checktype_id = attr.id_check_type, id = attr.id ) }}">Edit</a></li>
+            <li><a href="{{ url_for('.checkattribute_delete', checktype_id = attr.id_check_type, id = attr.id ) }}">Remove</a></li>
+         </ul>
+      </td>
+   </tr>
+   {% endfor %}
+</table>
+</div>
 {% endif %}
 {% if id %}
-<a href="{{ url_for('.checkattribute_edit', checktype_id = id) }}">Add attribute</a>
+<a href="{{ url_for('.checkattribute_edit', checktype_id = id) }}">Add new attribute</a>
 {% endif %}
 {% endblock %}

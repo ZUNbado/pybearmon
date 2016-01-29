@@ -41,18 +41,18 @@ class CheckAttribute(object):
 
     def save(self, id = None, check_type_id = None, name = None, type = None, required = None):
         if id:
-            return self.update(id, name )
+            return self.update( id, check_type_id, name, type, required )
         else:
-            return self.add(name)
+            return self.add( check_type_id, name, type, required )
 
     def update(self, id, check_type_id, name, type, required):
-        if self.db.update(self.table, dict( check_type_id = check_type_id, name = name, type = type, required = required), [ 'id = %s' % id ]):
+        if self.db.update(self.table, dict( id_check_type = check_type_id, name = name, type = type, required = required), [ 'id = %s' % id ]):
             self.db.commit()
             return id
         return False
 
-    def add(self, name):
-        if self.db.insert(self.table, dict( check_type_id = check_type_id, name = name, type = type, required = required)):
+    def add(self, check_type_id, name, type, required):
+        if self.db.insert(self.table, dict( id_check_type = check_type_id, name = name, type = type, required = required)):
             self.db.commit()
             return self.db.cur.lastrowid
         return False
