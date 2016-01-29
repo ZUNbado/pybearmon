@@ -41,7 +41,6 @@ class UserModel(Model):
 
     def save(self, id, **kwargs):
         kwargs['user_id'] = current_user.get_id()
-        print kwargs
         super(UserModel, self).save(id, **kwargs)
 
     def getAll(self):

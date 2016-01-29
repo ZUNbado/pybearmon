@@ -2,8 +2,10 @@ from flask import Flask, Blueprint,render_template, request, redirect, url_for
 from app.common.sql import getdb
 from .forms import CheckForm
 from .controllers import Checks
+from app.check_type.controllers import CheckType, CheckAttribute
 from flask_menu import Menu, register_menu
 from flask.ext.login import current_user
+import wtforms
 
 from app.auth.utils import user_logged, user_admin
 from app.check_type.controllers import CheckType, CheckAttribute
@@ -21,10 +23,18 @@ def checks_list():
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.checks.checks_edit', 'Add', visible_when=user_logged)
 def checks_edit(id = None):
-    form = CheckForm(request.form)
+    class CheckA(CheckForm):
+        pass
+    if id:
+        check = Checks().get(id)
+        attrs = CheckAttribute().getAll(checktype_id = check.type)
+        for attr in attrs:
+            setattr(CheckA, 'attr_%s' % attr.name, wtforms.TextField(attr.name))
+
+    form = CheckA(request.form)
     form.type.choices = CheckType().formList()
     if request.method == 'POST' and form.validate():
-        check = Checks().save(id = id, name = form.name.data, type = form.type.data, data = form.data.data, user_id = current_user.get_id())
+        check = Checks().save(id = id, name = form.name.data, type = form.type.data)
         if check:
             return redirect(url_for('.checks_edit', id = check))
     else:
@@ -33,7 +43,6 @@ def checks_edit(id = None):
             if dbcheck:
                 form.name.data = dbcheck.name
                 form.type.default = dbcheck.type
-                form.data.data = dbcheck.data
     return render_template('checks/edit.html', form = form)
 
 

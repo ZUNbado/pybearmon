@@ -1,6 +1,6 @@
+from flask.ext.wtf import Form
 import wtforms
 
-class CheckForm(wtforms.Form):
+class CheckForm(Form):
     name = wtforms.TextField('Check Name', [wtforms.validators.Required(), wtforms.validators.length(min=4)])
-    type = wtforms.TextField('Check Type', [wtforms.validators.Required()])
-    data = wtforms.TextField('Data')
+    type = wtforms.SelectField('Check Type', [wtforms.validators.Required()], coerce = int)
