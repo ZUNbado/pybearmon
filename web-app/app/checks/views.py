@@ -6,6 +6,7 @@ from flask_menu import Menu, register_menu
 from flask.ext.login import current_user
 
 from app.auth.utils import user_logged, user_admin
+from app.check_type.controllers import CheckType, CheckAttribute
 
 
 app = Blueprint('checks', __name__, url_prefix = '/checks')
@@ -25,6 +26,7 @@ def checks_list():
 @register_menu(app, '.checks.checks_edit', 'Add', visible_when=user_logged)
 def checks_edit(id = None):
     form = CheckForm(request.form)
+    form.type.choices = CheckType().formList()
     if request.method == 'POST' and form.validate():
         check = Checks().save(id = id, name = form.name.data, type = form.type.data, data = form.data.data, user_id = current_user.get_id())
         if check:
@@ -34,7 +36,7 @@ def checks_edit(id = None):
             dbcheck = Checks().get(id)
             if dbcheck:
                 form.name.data = dbcheck.name
-                form.type.data = dbcheck.type
+                form.type.default = dbcheck.type
                 form.data.data = dbcheck.data
     return render_template('checks/edit.html', form = form)
 

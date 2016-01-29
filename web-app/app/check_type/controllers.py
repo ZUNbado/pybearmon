@@ -33,6 +33,12 @@ class CheckType(object):
         items = self.db.getAll(self.table)
         return items if items else []
 
+    def formList(self):
+        choices = list()
+        for t in self.getAll():
+            choices.append( (t.id, t.name) )
+        return choices
+
 
 class CheckAttribute(object):
     table = 'check_attribute'
