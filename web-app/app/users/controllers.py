@@ -52,6 +52,7 @@ class LoginUser(UserMixin):
             return LoginUser(user.email, user.password, id = user.id)
         return False
 
+    @property
     def is_authenticated(self):
         user = Users().login(self.email, self.password)
         if user:
@@ -59,19 +60,21 @@ class LoginUser(UserMixin):
             return True
         return False
 
+    @property
     def is_active(self):
-        if self.is_authenticated():
+        if self.is_authenticated:
             self.active = self.user.is_active
             if self.active:
                 return True
         return False
 
+    @property
     def is_admin(self):
-        if self.is_active():
+        if self.is_active:
             if self.user.is_admin:
                 return True
         return False
 
     def get_id(self):
-        if self.is_active():
+        if self.is_active:
             return unicode(self.user.id)

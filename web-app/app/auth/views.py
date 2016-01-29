@@ -14,12 +14,12 @@ app = Blueprint('auth', __name__, url_prefix = '/auth')
 @app.route('/login', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.login', 'Login', visible_when=user_anonymous)
 def login():
-    if current_user.is_active(): return redirect(url_for('index'))
+    if current_user.is_active: return redirect(url_for('index'))
 
     form = LoginForm(request.form)
     if request.method == 'POST' and form.validate():
         user = LoginUser(email = form.email.data, password = form.password.data)
-        if user.is_authenticated():
+        if user.is_authenticated:
             login_user(user)
             flash('Logged in successfully')
             return redirect(url_for('index'))

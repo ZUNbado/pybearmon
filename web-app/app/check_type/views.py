@@ -52,7 +52,7 @@ def checkattribute_delete(checktype_id, id):
 def checkattribute_edit(checktype_id, id = None):
     form = AttributeForm(request.form)
     if request.method == 'POST' and form.validate():
-        attr = CheckAttribute().save(id = id, check_type_id = checktype_id, name = form.name.data, type = form.type.data, required = form.required.data)
+        attr = CheckAttribute().save(id = id, id_check_type = checktype_id, name = form.name.data, type = form.type.data, required = form.required.data)
         if attr:
             return redirect(url_for('.checktype_edit', id = checktype_id))
     else:

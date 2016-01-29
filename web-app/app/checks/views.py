@@ -14,11 +14,7 @@ app = Blueprint('checks', __name__, url_prefix = '/checks')
 @register_menu(app, '.checks.checks_list', 'List', visible_when=user_logged)
 @register_menu(app, '.checks', 'Checks', visible_when=user_logged)
 def checks_list():
-    if user_admin():
-        user_id = None
-    else:
-        user_id = current_user.get_id()
-    checks = Checks().getAll(user_id = user_id)
+    checks = Checks().getAll()
     return render_template('checks/list.html', items = checks )
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
