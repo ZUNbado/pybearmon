@@ -32,7 +32,9 @@ def checks_edit(id = None):
         attrs = CheckAttribute().getAll(checktype_id = check.type)
         for attr in attrs:
             value = data[attr.name][0] if attr.name in data else ''
-            field = wtforms.TextField(attr.name, default = value)
+            validators = []
+            if attr.required: validators.append(wtforms.validators.Required())
+            field = getattr(wtforms, attr.type)(attr.name, default = value, validators = validators)
             setattr(CheckA, 'attr_%s' % attr.name, field)
 
 
