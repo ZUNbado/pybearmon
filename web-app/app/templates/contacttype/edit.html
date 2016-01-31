@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field %}
+{% block body %}
+
+<form method="POST">
+        <dl>
+                {{ render_field(form.name) }}
+        </dl>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+{% if attrs %}
+<h3>Current attributes of contact type</h3>
+<div class="table-responsive">
+<table class="table">
+   <tr>
+      <th>Name</th>
+      <th>Type</th>
+      <th>Required</th>
+      <th>Actions</th>
+   </tr>
+   {% for attr in attrs %}
+   <tr>
+      <td>{{ attr.name }}</td>
+      <td>{{ attr.type }}</td>
+      <td>{% if attr.required %}Yes{% else %}No{% endif %}</td>
+      <td>
+         <ul>
+            <li><a href="{{ url_for('.contactattribute_edit', contacttype_id = attr.id_contact_type, id = attr.id ) }}">Edit</a></li>
+            <li><a href="{{ url_for('.contactattribute_delete', contacttype_id = attr.id_contact_type, id = attr.id ) }}">Remove</a></li>
+         </ul>
+      </td>
+   </tr>
+   {% endfor %}
+</table>
+</div>
+{% endif %}
+{% if id %}
+<a href="{{ url_for('.contactattribute_edit', contacttype_id = id) }}">Add new attribute</a>
+{% endif %}
+{% endblock %}

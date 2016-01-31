@@ -12,7 +12,6 @@ import urlparse
 from app.auth.utils import user_logged, user_admin
 from app.check_type.controllers import CheckType, CheckAttribute
 
-
 app = Blueprint('checks', __name__, url_prefix = '/checks')
 @app.route('/')
 @register_menu(app, '.checks.checks_list', 'List', visible_when=user_logged)
@@ -45,7 +44,7 @@ def checks_edit(id = None):
             if field.id[:5] == 'attr_':
                 data[field.id[5:]] = field.data
         data = urllib.urlencode(data)
-        check = Checks().save(id = id, name = form.name.data, type = form.type.data, data = data)
+        check = Checks().save(id = id, name = form.name.data, type = form.type.data, data = data, public = form.public.data, max_confirmations = form.max_confirmations.data)
         if check:
             return redirect(url_for('.checks_edit', id = check))
     else:
@@ -55,6 +54,8 @@ def checks_edit(id = None):
                 form.type.default = dbcheck.type
                 form.process()
                 form.name.data = dbcheck.name
+                form.public.data = dbcheck.public
+                form.max_confirmations.data = dbcheck.max_confirmations
     return render_template('checks/edit.html', form = form)
 
 
