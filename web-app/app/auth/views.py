@@ -14,10 +14,8 @@ app = Blueprint('auth', __name__, url_prefix = '/auth')
 @app.route('/login', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.login', 'Login', visible_when=user_anonymous)
 def login():
-    if current_user.is_active: return redirect(url_for('index'))
-
     form = LoginForm(request.form)
-    if request.method == 'POST' and form.validate():
+    if form.validate_on_submit():
         user = LoginUser(email = form.email.data, password = form.password.data)
         if user.is_authenticated:
             login_user(user)
@@ -25,7 +23,7 @@ def login():
             return redirect(url_for('index'))
         else:
             flash('Credentials not valid')
-    return render_template('auth/login.html', form = form)
+    return render_template('edit.html', form = form)
 
 @app.route('/register', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.register', 'Register', visible_when=user_anonymous)
