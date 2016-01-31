@@ -150,7 +150,7 @@ while True:
 	safe_print("[monitor] fetching up to %d...", (free_threads))
 	database.query(update_query, params)
 
-	result = database.query("SELECT id, name, type, data, status, confirmations FROM checks WHERE `lock` = %s", (uid,))
+	result = database.query("SELECT checks.id, checks.name, check_type.name AS type, data, status, confirmations FROM checks INNER JOIN check_type ON type=check_type.id WHERE `lock` = %s", (uid,))
 	safe_print("[monitor] fetched %d checks", (result.rowcount))
 
 	for row in result.fetchall():

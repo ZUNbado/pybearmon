@@ -11,8 +11,7 @@ class Model(object):
     def save(self, id = None, **kwargs):
         if id:
             return self.update(id, **kwargs)
-        else:
-            return self.add(**kwargs)
+        return self.add(**kwargs)
 
     def update(self, id, **kwargs):
         if self.db.update(self.table, kwargs, [ '%s = %s' % (self.primary_key, id) ]):
@@ -28,8 +27,12 @@ class Model(object):
 
     def get(self, key):
         check = self.db.getOne(self.table, '*', [ '%s = %s' % (self.primary_key, key) ] )
-        if check:
-            return check
+        return check if check else False
+
+    def delete(self, key):
+        if self.db.delete(self.table, [ '%s = %s' % (self.primary_key, key) ]):
+            self.db.commit()
+            return True
         return False
 
     def getAll(self):
@@ -41,8 +44,9 @@ class UserModel(Model):
 
     def save(self, id, **kwargs):
         kwargs['user_id'] = current_user.get_id()
-        super(UserModel, self).save(id, **kwargs)
+        return super(UserModel, self).save(id, **kwargs)
 
     def getAll(self):
-        items = self.db.getAll(self.table, '*', [ '%s = %s' % ( self.usercol, current_user.get_id() ) ])
+        where = None if current_user.is_admin else [ '%s = %s' % ( self.usercol, current_user.get_id() ) ]
+        items = self.db.getAll(self.table, '*',  where)
         return items if items else []

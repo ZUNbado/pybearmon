@@ -1,5 +1,6 @@
 flask
 flask-login
 flask-menu
+flask-wtf
 sshtunnel
-wtforms
+mysql-python

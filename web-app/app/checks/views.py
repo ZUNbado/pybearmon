@@ -6,6 +6,8 @@ from app.check_type.controllers import CheckType, CheckAttribute
 from flask_menu import Menu, register_menu
 from flask.ext.login import current_user
 import wtforms
+import urllib
+import urlparse
 
 from app.auth.utils import user_logged, user_admin
 from app.check_type.controllers import CheckType, CheckAttribute
@@ -27,26 +29,36 @@ def checks_edit(id = None):
         pass
     if id:
         check = Checks().get(id)
+        data = urlparse.parse_qs(check.data)
         attrs = CheckAttribute().getAll(checktype_id = check.type)
         for attr in attrs:
-            setattr(CheckA, 'attr_%s' % attr.name, wtforms.TextField(attr.name))
+            value = data[attr.name][0] if attr.name in data else ''
+            field = wtforms.TextField(attr.name, default = value)
+            setattr(CheckA, 'attr_%s' % attr.name, field)
+
 
     form = CheckA(request.form)
     form.type.choices = CheckType().formList()
-    if request.method == 'POST' and form.validate():
-        check = Checks().save(id = id, name = form.name.data, type = form.type.data)
+    if request.method == 'POST' and form.validate_on_submit():
+        data = dict()
+        for field in form:
+            if field.id[:5] == 'attr_':
+                data[field.id[5:]] = field.data
+        data = urllib.urlencode(data)
+        check = Checks().save(id = id, name = form.name.data, type = form.type.data, data = data)
         if check:
             return redirect(url_for('.checks_edit', id = check))
     else:
         if id:
             dbcheck = Checks().get(id)
             if dbcheck:
-                form.name.data = dbcheck.name
                 form.type.default = dbcheck.type
+                form.process()
+                form.name.data = dbcheck.name
     return render_template('checks/edit.html', form = form)
 
 
 @app.route('/delete/<int:id>')
 def checks_delete(id):
+    Checks().delete(id)
     return redirect(url_for('.checks_list'))
-
