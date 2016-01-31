@@ -4,8 +4,8 @@ from flask.ext.login import login_required, login_user, current_user, logout_use
 
 from .utils import user_logged, user_anonymous
 
-from app.users.controllers import LoginUser
-from .forms import LoginForm
+from app.users.controllers import Users, LoginUser
+from .forms import LoginForm, RegisterForm
 
 
 app = Blueprint('auth', __name__, url_prefix = '/auth')
@@ -26,6 +26,18 @@ def login():
         else:
             flash('Credentials not valid')
     return render_template('auth/login.html', form = form)
+
+@app.route('/register', methods = [ 'POST', 'GET' ])
+@register_menu(app, '.register', 'Register', visible_when=user_anonymous)
+def register():
+    form = RegisterForm(request.form)
+    if form.validate_on_submit():
+        if Users().save(name = form.name.data, email = form.email.data, password = form.password.data, is_active = 1):
+            user = LoginUser(email = form.email.data, password = form.password.data)
+            if user.is_authenticated:
+                login_user(user)
+                return redirect(url_for('index'))
+    return render_template('edit.html', form = form)
 
 @app.route('/logout')
 @register_menu(app, '.logout', 'Logout', visible_when=user_logged)
