@@ -4,7 +4,7 @@ from .forms import CheckForm
 from .controllers import Checks
 from app.check_type.controllers import CheckType, CheckAttribute
 from flask_menu import Menu, register_menu
-from flask.ext.login import current_user
+from flask.ext.login import current_user, fresh_login_required
 import wtforms
 import urllib
 import urlparse
@@ -16,6 +16,7 @@ app = Blueprint('checks', __name__, url_prefix = '/checks')
 @app.route('/')
 @register_menu(app, '.checks.checks_list', 'List', visible_when=user_logged)
 @register_menu(app, '.checks', 'Checks', visible_when=user_logged)
+@fresh_login_required
 def checks_list():
     checks = Checks().getAll()
     return render_template('checks/list.html', items = checks )

@@ -6,6 +6,7 @@ from flask.ext.login import LoginManager
 app = Flask(__name__)
 Menu(app=app)
 login_manager = LoginManager(app)
+login_manager.login_view = '/auth/login'
 @login_manager.user_loader
 def load_user(user_id):
     from app.users.controllers import LoginUser
