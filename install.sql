@@ -89,7 +89,7 @@ DROP TABLE IF EXISTS `checks`;
 CREATE TABLE `checks` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
-  `type` varchar(32) NOT NULL,
+  `type` int(11) NOT NULL,
   `data` varchar(512) NOT NULL,
   `check_interval` int(11) NOT NULL DEFAULT '60',
   `status` enum('online','offline') DEFAULT 'online',
