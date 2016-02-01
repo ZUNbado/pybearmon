@@ -30,8 +30,8 @@ class MonitorPool:
 	def free(self):
 		return self.num_threads - self.q.qsize()
 
-	def queue(self, check_id, check_name, check_type, check_data, status, confirmations, lock_uid):
-		self.q.put((check_id, check_name, check_type, check_data, status, confirmations, lock_uid))
+	def queue(self, check_id, check_name, check_type, check_data, status, max_confirmations, confirmations, lock_uid):
+		self.q.put((check_id, check_name, check_type, check_data, status, max_confirmations, confirmations, lock_uid))
 
 	def handle_change(self, thread_name, check_id, check_name, lock_uid, status, check_result):
 		if status == 'offline':
@@ -73,7 +73,7 @@ class MonitorPool:
 		thread_name = threading.currentThread().getName()
 
 		while True:
-			check_id, check_name, check_type, check_data, status, confirmations, lock_uid = self.q.get()
+			check_id, check_name, check_type, check_data, status, max_confirmations, confirmations, lock_uid = self.q.get()
 
 			safe_print("[%s] processing check %d: calling checks.%s", (thread_name, check_id, check_type))
 			check_result = checks.run_check(check_type, util.decode(check_data))
@@ -95,7 +95,7 @@ class MonitorPool:
 					with recent_failures_lock:
 						recent_failures.add((check_id, util.time()))
 
-					if confirmations + 1 >= config['confirmations']:
+					if confirmations + 1 >= max_confirmations:
 						# target has failed
 						self.handle_change(thread_name, check_id, check_name, lock_uid, 'offline', check_result)
 					else:
@@ -107,7 +107,7 @@ class MonitorPool:
 				safe_print("[%s] ... got success", (thread_name))
 
 				if status == 'offline':
-					if confirmations + 1 >= config['confirmations']:
+					if confirmations + 1 >= max_confirmations:
 						# target has come back online
 						self.handle_change(thread_name, check_id, check_name, lock_uid, 'online', check_result)
 					else:
@@ -150,7 +150,7 @@ while True:
 	safe_print("[monitor] fetching up to %d...", (free_threads))
 	database.query(update_query, params)
 
-	result = database.query("SELECT checks.id, checks.name, check_type.name AS type, data, status, confirmations FROM checks INNER JOIN check_type ON type=check_type.id WHERE `lock` = %s", (uid,))
+	result = database.query("SELECT checks.id, checks.name, check_type.name AS type, data, status, max_confirmations, confirmations FROM checks INNER JOIN check_type ON type=check_type.id WHERE `lock` = %s", (uid,))
 	safe_print("[monitor] fetched %d checks", (result.rowcount))
 
 	for row in result.fetchall():
@@ -159,6 +159,7 @@ while True:
 		check_type = row['type']
 		check_data = row['data']
 		status = row['status']
+		max_confirmations = row['max_confirmations']
 		confirmations = row['confirmations']
 
-		pool.queue(check_id, check_name, check_type, check_data, status, confirmations, uid)
+		pool.queue(check_id, check_name, check_type, check_data, status, max_confirmations, confirmations, uid)
