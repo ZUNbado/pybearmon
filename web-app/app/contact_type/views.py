@@ -14,7 +14,7 @@ app = Blueprint('contacts_type', __name__, url_prefix = '/contacts_type')
 @fresh_login_required
 def contacttype_list():
     contacts = ContactType().getAll()
-    return render_template('contacttype/list.html', items = contacts )
+    return render_template('list.html', items = contacts, columns = [ 'name' ], endpoint = 'contacttype' )
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
@@ -65,4 +65,4 @@ def contactattribute_edit(contacttype_id, id = None):
                         fd = getattr(form, key)
                         fd.data = value
                         setattr(form, key,  fd)
-    return render_template('contacttype/attribute_edit.html', form = form)
+    return render_template('edit.html', form = form)

@@ -1,5 +1,6 @@
 from flask import Flask, Blueprint,render_template, request, redirect, url_for
 from app.common.sql import getdb
+from app.common.forms import getFormForModel
 from .forms import UserForm
 from .controllers import Users
 from flask_menu import Menu, register_menu
@@ -13,26 +14,20 @@ app = Blueprint('users', __name__, url_prefix = '/users')
 @register_menu(app, '.users', 'Users', visible_when=user_admin)
 def users_list():
     users = Users().getAll()
-    return render_template('users/list.html', items = users )
+    columns = [ 'name', 'email', 'is_active', 'is_admin' ]
+    return render_template('list.html', items = users, columns = columns, endpoint = 'users' )
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.users.users_edit', 'Add', visible_when=user_admin)
 def users_edit(id = None):
-    form = UserForm(request.form)
+    form = getFormForModel(UserForm, Users, id)
     if request.method == 'POST' and form.validate():
-        check = Users().save(id = id, name = form.name.data, email = form.email.data, password = form.password.data)
-        if check:
-            return redirect(url_for('.users_edit', id = check))
-    else:
-        if id:
-            dbcheck = Users().get(id)
-            if dbcheck:
-                form.name.data = dbcheck.name
-                form.email.data = dbcheck.email
-                form.password.data = dbcheck.password
-                form.is_active.data = dbcheck.is_active
-                form.is_admin.data = dbcheck.is_admin
+        user = dict(id = id, name = form.name.data, email = form.email.data)
+        if form.password.data: user['password'] = form.password.data
+        item = Users().save(**user)
+        if item:
+            return redirect(url_for('.users_edit', id = item))
     return render_template('edit.html', form = form)
 
 

@@ -1,9 +1,18 @@
+from flask.ext.wtf import Form
 import wtforms
 
-class ContactForm(wtforms.Form):
+class ContactForm(Form):
     name = wtforms.TextField('Name', [wtforms.validators.Required(), wtforms.validators.length(min=4)])
 
-class AttributeForm(wtforms.Form):
+choices = [
+        ('TextField', 'Text'),
+        ('BooleanField', 'Boolean'),
+        ('IntegerField', 'Integer'),
+        ('PasswordField', 'Password'),
+        ]
+
+class AttributeForm(Form):
     name = wtforms.TextField('Name', [wtforms.validators.Required()])
-    type = wtforms.TextField('Type', [wtforms.validators.Required()])
+    type = wtforms.SelectField('Type', choices = choices)
     required = wtforms.BooleanField('Required')
+

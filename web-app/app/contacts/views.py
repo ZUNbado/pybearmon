@@ -19,7 +19,8 @@ app = Blueprint('contacts', __name__, url_prefix = '/contacts')
 @fresh_login_required
 def contacts_list():
     contacts = Contacts().getAll()
-    return render_template('contacts/list.html', items = contacts )
+    columns = [ 'name', 'type' ]
+    return render_template('list.html', items = contacts, columns = columns, endpoint = 'contacts' )
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
@@ -56,7 +57,7 @@ def contacts_edit(id = None):
                 form.type.default = dbcontact.type
                 form.process()
                 form.name.data = dbcontact.name
-    return render_template('contacts/edit.html', form = form)
+    return render_template('edit.html', form = form)
 
 
 @app.route('/delete/<int:id>')

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="table-responsive">
+    <table class="table">
+            <tr>
+                    {% for column in columns %}
+                    <th>{{ column|capitalize }}</th>
+                    {% endfor %}
+                    <th>Actions</th>
+            </tr>
+            {% for item in items %}
+            <tr>
+                    {% for column in columns %}
+                    <td>{{ item[column] }}</td>
+                    {% endfor %}
+                    <td>
+                            <ul>
+                                    <li><a href="{{ url_for('.%s_edit' % endpoint, id = item.id) }}">Edit</a></li>
+                                    <li><a href="{{ url_for('.%s_delete' % endpoint, id = item.id) }}">Delete</a></li>
+                            </ul>
+                    </td>
+            </tr>
+            {% endfor %}
+    </table>
+</div>
+{% endblock %}

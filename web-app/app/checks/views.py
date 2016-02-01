@@ -19,7 +19,8 @@ app = Blueprint('checks', __name__, url_prefix = '/checks')
 @fresh_login_required
 def checks_list():
     checks = Checks().getAll()
-    return render_template('checks/list.html', items = checks )
+    columns = [ 'name', 'type', 'status', 'last_checked', 'confirmations' ]
+    return render_template('list.html', items = checks, columns = columns, endpoint = 'checks' )
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
@@ -60,7 +61,7 @@ def checks_edit(id = None):
                 form.name.data = dbcheck.name
                 form.public.data = dbcheck.public
                 form.max_confirmations.data = dbcheck.max_confirmations
-    return render_template('checks/edit.html', form = form)
+    return render_template('edit.html', form = form)
 
 
 @app.route('/delete/<int:id>')
