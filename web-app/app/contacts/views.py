@@ -4,7 +4,7 @@ from .forms import ContactForm
 from .controllers import Contacts
 from app.contact_type.controllers import ContactType, ContactAttribute
 from flask_menu import Menu, register_menu
-from flask.ext.login import current_user
+from flask.ext.login import fresh_login_required
 import wtforms
 import urllib
 import urlparse
@@ -16,6 +16,7 @@ app = Blueprint('contacts', __name__, url_prefix = '/contacts')
 @app.route('/')
 @register_menu(app, '.contacts.contacts_list', 'List', visible_when=user_logged)
 @register_menu(app, '.contacts', 'Contacts', visible_when=user_logged)
+@fresh_login_required
 def contacts_list():
     contacts = Contacts().getAll()
     return render_template('contacts/list.html', items = contacts )
@@ -23,6 +24,7 @@ def contacts_list():
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.contacts.contacts_edit', 'Add', visible_when=user_logged)
+@fresh_login_required
 def contacts_edit(id = None):
     class ContactA(ContactForm):
         pass
@@ -58,6 +60,7 @@ def contacts_edit(id = None):
 
 
 @app.route('/delete/<int:id>')
+@fresh_login_required
 def contacts_delete(id):
     Contacts().delete(id)
     return redirect(url_for('.contacts_list'))

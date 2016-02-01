@@ -4,7 +4,7 @@ from .forms import CheckForm
 from .controllers import Checks
 from app.check_type.controllers import CheckType, CheckAttribute
 from flask_menu import Menu, register_menu
-from flask.ext.login import current_user, fresh_login_required
+from flask.ext.login import fresh_login_required
 import wtforms
 import urllib
 import urlparse
@@ -24,6 +24,7 @@ def checks_list():
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.checks.checks_edit', 'Add', visible_when=user_logged)
+@fresh_login_required
 def checks_edit(id = None):
     class CheckA(CheckForm):
         pass
@@ -63,6 +64,7 @@ def checks_edit(id = None):
 
 
 @app.route('/delete/<int:id>')
+@fresh_login_required
 def checks_delete(id):
     Checks().delete(id)
     return redirect(url_for('.checks_list'))

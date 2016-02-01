@@ -3,15 +3,15 @@ from app.common.sql import getdb
 from .forms import ContactForm, AttributeForm
 from .controllers import ContactType, ContactAttribute
 from flask_menu import Menu, register_menu
-from flask.ext.login import current_user
+from flask.ext.login import fresh_login_required
 
 from app.auth.utils import user_admin
-
 
 app = Blueprint('contacts_type', __name__, url_prefix = '/contacts_type')
 @app.route('/')
 @register_menu(app, '.contactstype.contacttype_list', 'List', visible_when=user_admin)
 @register_menu(app, '.contactstype.', 'Contact Types', visible_when=user_admin)
+@fresh_login_required
 def contacttype_list():
     contacts = ContactType().getAll()
     return render_template('contacttype/list.html', items = contacts )
@@ -19,6 +19,7 @@ def contacttype_list():
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.contactstype.contacttype_edit', 'Add', visible_when=user_admin)
+@fresh_login_required
 def contacttype_edit(id = None):
     form = ContactForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -36,19 +37,19 @@ def contacttype_edit(id = None):
         attrs = list()
     return render_template('contacttype/edit.html', form = form, attrs = attrs, id = id)
 
-
 @app.route('/delete/<int:id>')
+@fresh_login_required
 def contacttype_delete(id):
     return redirect(url_for('.contacttype_list'))
 
 @app.route('/delete/<int:contacttype_id>/attribute/<int:id>')
+@fresh_login_required
 def contactattribute_delete(contacttype_id, id):
     return redirect(url_for('.contacttype_edit', id = contacttype_id))
 
-
-
 @app.route('/edit/<int:contacttype_id>/attribute', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:contacttype_id>/attribute/<int:id>', methods = [ 'POST', 'GET' ])
+@fresh_login_required
 def contactattribute_edit(contacttype_id, id = None):
     form = AttributeForm(request.form)
     if request.method == 'POST' and form.validate():

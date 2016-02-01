@@ -3,7 +3,7 @@ from app.common.sql import getdb
 from .forms import CheckForm, AttributeForm
 from .controllers import CheckType, CheckAttribute
 from flask_menu import Menu, register_menu
-from flask.ext.login import current_user
+from flask.ext.login import fresh_login_required
 
 from app.auth.utils import user_admin
 
@@ -12,6 +12,7 @@ app = Blueprint('checks_type', __name__, url_prefix = '/checks_type')
 @app.route('/')
 @register_menu(app, '.checkstype.checktype_list', 'List', visible_when=user_admin)
 @register_menu(app, '.checkstype.', 'Check Types', visible_when=user_admin)
+@fresh_login_required
 def checktype_list():
     checks = CheckType().getAll()
     return render_template('checktype/list.html', items = checks )
@@ -19,6 +20,7 @@ def checktype_list():
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
 @register_menu(app, '.checkstype.checktype_edit', 'Add', visible_when=user_admin)
+@fresh_login_required
 def checktype_edit(id = None):
     form = CheckForm(request.form)
     if request.method == 'POST' and form.validate():
@@ -38,10 +40,12 @@ def checktype_edit(id = None):
 
 
 @app.route('/delete/<int:id>')
+@fresh_login_required
 def checktype_delete(id):
     return redirect(url_for('.checktype_list'))
 
 @app.route('/delete/<int:checktype_id>/attribute/<int:id>')
+@fresh_login_required
 def checkattribute_delete(checktype_id, id):
     return redirect(url_for('.checktype_edit', id = checktype_id))
 
@@ -49,6 +53,7 @@ def checkattribute_delete(checktype_id, id):
 
 @app.route('/edit/<int:checktype_id>/attribute', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:checktype_id>/attribute/<int:id>', methods = [ 'POST', 'GET' ])
+@fresh_login_required
 def checkattribute_edit(checktype_id, id = None):
     form = AttributeForm(request.form)
     if request.method == 'POST' and form.validate():
