@@ -31,7 +31,9 @@ def users_edit(id = None):
                 form.name.data = dbcheck.name
                 form.email.data = dbcheck.email
                 form.password.data = dbcheck.password
-    return render_template('users/edit.html', form = form)
+                form.is_active.data = dbcheck.is_active
+                form.is_admin.data = dbcheck.is_admin
+    return render_template('edit.html', form = form)
 
 
 @app.route('/delete/<int:id>')

@@ -5,11 +5,16 @@
             <tr>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Active</th>
+                    <th>Admin</th>
+                    <th>Actions</th>
             </tr>
             {% for item in items %}
             <tr>
                     <td>{{ item.name }}</td>
                     <td>{{ item.email }}</td>
+                    <td>{{ item.is_active }}</td>
+                    <td>{{ item.is_admin }}</td>
                     <td>
                             <ul>
                                     <li><a href="{{ url_for('.users_edit', id = item.id) }}">Edit</a></li>
