@@ -22,7 +22,7 @@ def contacttype_list():
 @fresh_login_required
 def contacttype_edit(id = None):
     form = ContactForm(request.form)
-    if request.method == 'POST' and form.validate():
+    if form.validate_on_submit():
         contact = ContactType().save(id = id, name = form.name.data)
         if contact:
             return redirect(url_for('.contacttype_edit', id = contact))

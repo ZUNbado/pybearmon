@@ -39,11 +39,13 @@ def checktype_edit(id = None):
 @app.route('/delete/<int:id>')
 @fresh_login_required
 def checktype_delete(id):
+    CheckType().delete(id)
     return redirect(url_for('.checktype_list'))
 
 @app.route('/delete/<int:checktype_id>/attribute/<int:id>')
 @fresh_login_required
 def checkattribute_delete(checktype_id, id):
+    CheckAttribute().delete(id)
     return redirect(url_for('.checktype_edit', id = checktype_id))
 
 @app.route('/edit/<int:checktype_id>/attribute', methods = [ 'POST', 'GET' ])
