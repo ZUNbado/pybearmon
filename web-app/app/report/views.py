@@ -9,10 +9,12 @@ app = Blueprint('report', __name__)
 @app.route('/report', defaults = dict(username = None))
 def public_list(username):
     public = True if username else False
-    if not username and current_user.is_active():
-        user = current_user.user
-    else:
-        user = Users().get_by_name(username)
+    user = Users().get_by_name(username)
+
     if not user: return redirect(url_for('index'))
+
+    if current_user.is_active() and current_user.id = user.id:
+        public = False
+
     checks = Checks().getReport(user.id, public)
     return render_template('report/report.html', checks = checks )
