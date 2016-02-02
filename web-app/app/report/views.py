@@ -13,8 +13,8 @@ def public_list(username):
 
     if not user: return redirect(url_for('index'))
 
-    if current_user.is_active() and current_user.id = user.id:
-        public = False
+#    if current_user.is_authenticated() and int(current_user.get_id()) == int(user.id):
+#        public = False
 
     checks = Checks().getReport(user.id, public)
     return render_template('report/report.html', checks = checks )
