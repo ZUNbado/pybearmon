@@ -5,14 +5,16 @@ from flask.ext.login import UserMixin
 class Users(Model):
     table = 'users'
 
-    def __init__(self):
-        self.db = getdb()
-
     def login(self, email, password):
         user = self.db.getOne(self.table, '*', ( 'email = %s AND password = %s', [ email, password ]))
         if user:
             return user
         return False
+
+    def get_by_name(self, username):
+        user = self.db.getOne(self.table, '*', ( 'name = %s', [ username ] ) )
+        return user
+
 
 class LoginUser(UserMixin):
     def __init__(self, email=None, password=None, active=True, id=None):

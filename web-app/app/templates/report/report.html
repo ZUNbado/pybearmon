@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block body %}
+<div class="container">
+    {% for check in checks %}
+    <div class="service">
+        <h2>
+            <i 
+                class="glyphicon glyphicon-{% if check.status == 'online' %}ok{% else %}remove{% endif %}-sign" 
+                style="color: {% if check.status == 'online' %}green{% else %}red{% endif %};">
+            </i>
+            <a>{{ check.name }}</a>
+        </h2>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

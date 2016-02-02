@@ -12,6 +12,13 @@ def load_user(user_id):
     from app.users.controllers import LoginUser
     return LoginUser().get_by_id(user_id)
 
+@app.route('/')
+def index():
+    print 'home'
+    db = getdb()
+    list_checks = db.getAll('checks', '*', ['public = 1'])
+    return render_template('index.html', checks = list_checks if list_checks else [] )
+
 from app.checks.views import app as checks_view
 app.register_blueprint(checks_view)
 
@@ -30,10 +37,8 @@ app.register_blueprint(contacttype_view)
 from app.contacts.views import app as contacts_view
 app.register_blueprint(contacts_view)
 
+from app.report.views import app as report_view
+app.register_blueprint(report_view)
 
-@app.route('/')
-def index():
-    db = getdb()
-    list_checks = db.getAll('checks', '*', ['public = 1'])
-    return render_template('index.html', checks = list_checks if list_checks else [] )
+
 
