@@ -14,9 +14,8 @@ def load_user(user_id):
 
 @app.route('/')
 def index():
-    print 'home'
     db = getdb()
-    list_checks = db.getAll('checks', '*', ['public = 1'])
+    list_checks = db.getAll('checks', '*', ['public = 1'], limit = [0 ,10])
     return render_template('index.html', checks = list_checks if list_checks else [] )
 
 from app.checks.views import app as checks_view
