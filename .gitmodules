@@ -1,0 +1,3 @@
+[submodule "web-app/app/static"]
+	path = web-app/app/static
+	url = https://github.com/BlackrockDigital/startbootstrap-sb-admin.git
