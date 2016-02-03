@@ -1,12 +1,13 @@
 from app.common.sql import getdb
 from app.common.model import UserModel
+from flask.ext.login import current_user
 
 class Checks(UserModel):
     table = 'checks'
 
     def getAll(self):
-        # add user_id to where
-        items = self.db.leftJoin((self.table, 'check_type'), ('*', [ 'name AS check_type' ]), ('type', 'id'))
+        where = None if current_user.is_admin else [ '%s = %s' % ( self.usercol, current_user.get_id() ) ]
+        items = self.db.leftJoin((self.table, 'check_type'), ('*', [ 'name AS check_type' ]), ('type', 'id'), where)
         return items if items else []
 
     def getReport(self, user_id, public):

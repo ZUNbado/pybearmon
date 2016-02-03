@@ -32,7 +32,7 @@ def register():
     if form.validate_on_submit():
         if Users().save(name = form.name.data, email = form.email.data, password = form.password.data, is_active = 1):
             user = LoginUser(email = form.email.data, password = form.password.data)
-            if user.is_authenticated():
+            if user.is_authenticated:
                 login_user(user)
                 return redirect(url_for('index'))
     return render_template('edit.html', form = form)
