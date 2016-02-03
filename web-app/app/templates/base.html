@@ -80,12 +80,6 @@
                           <a href="/"><i class="fa fa-fw fa-dashboard"></i> Home</a>
                         </li>
                         {{ render_menu(current_menu) }}
-                        {% if current_user.is_admin %}
-                        <li>
-                            <a href="#"><i class="fa fa-fw fa-dashboard"></i> Admin</a>
-                        </li>
-                        {{ render_menu(current_menu.submenu('admin', True)) }}
-                        {% endif %}
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
