@@ -12,7 +12,6 @@ app = Blueprint('auth', __name__, url_prefix = '/auth')
 
 
 @app.route('/login', methods = [ 'POST', 'GET' ])
-@register_menu(app, '.login', 'Login', visible_when=user_anonymous)
 def login():
     form = LoginForm(request.form)
     if form.validate_on_submit():
@@ -26,7 +25,6 @@ def login():
     return render_template('edit.html', form = form)
 
 @app.route('/register', methods = [ 'POST', 'GET' ])
-@register_menu(app, '.register', 'Register', visible_when=user_anonymous)
 def register():
     form = RegisterForm(request.form)
     if form.validate_on_submit():
@@ -38,7 +36,6 @@ def register():
     return render_template('edit.html', form = form)
 
 @app.route('/logout')
-@register_menu(app, '.logout', 'Logout', visible_when=user_logged)
 def logout():
     logout_user()
     return redirect(url_for('index'))
