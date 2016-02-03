@@ -33,5 +33,6 @@ def users_edit(id = None):
 
 @app.route('/delete/<int:id>')
 def users_delete(id):
+    Users().delete(id)
     return redirect(url_for('.users_list'))
 
