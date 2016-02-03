@@ -2,6 +2,7 @@ from flask import Flask, render_template
 from flask_menu import Menu, register_menu
 from common.sql import getdb
 from flask.ext.login import LoginManager
+from auth.utils import user_admin
 
 app = Flask(__name__)
 Menu(app=app)

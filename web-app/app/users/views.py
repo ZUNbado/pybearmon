@@ -10,8 +10,8 @@ from app.auth.utils import user_admin
 
 app = Blueprint('users', __name__, url_prefix = '/users')
 @app.route('/')
-@register_menu(app, '.users.users_list', 'List', visible_when=user_admin)
-@register_menu(app, '.users', 'Users', visible_when=user_admin)
+@register_menu(app, '.admin.users.users_list', 'List', visible_when=user_admin)
+@register_menu(app, '.admin.users', 'Users', visible_when=user_admin)
 def users_list():
     users = Users().getAll()
     columns = [ 'name', 'email', 'is_active', 'is_admin' ]
@@ -19,7 +19,7 @@ def users_list():
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
-@register_menu(app, '.users.users_edit', 'Add', visible_when=user_admin)
+@register_menu(app, '.admin.users.users_edit', 'Add', visible_when=user_admin)
 def users_edit(id = None):
     form = getFormForModel(UserForm, Users, id)
     if request.method == 'POST' and form.validate():

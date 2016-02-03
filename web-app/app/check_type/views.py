@@ -11,8 +11,8 @@ from app.auth.utils import user_admin
 
 app = Blueprint('checks_type', __name__, url_prefix = '/checks_type')
 @app.route('/')
-@register_menu(app, '.checkstype.checktype_list', 'List', visible_when=user_admin)
-@register_menu(app, '.checkstype.', 'Check Types', visible_when=user_admin)
+@register_menu(app, '.admin.checkstype.checktype_list', 'List', visible_when=user_admin)
+@register_menu(app, '.admin.checkstype.', 'Check Types', visible_when=user_admin)
 @fresh_login_required
 def checktype_list():
     checks = CheckType().getAll()
@@ -21,7 +21,7 @@ def checktype_list():
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
-@register_menu(app, '.checkstype.checktype_edit', 'Add', visible_when=user_admin)
+@register_menu(app, '.admin.checkstype.checktype_edit', 'Add', visible_when=user_admin)
 @fresh_login_required
 def checktype_edit(id = None):
     form = getFormForModel(CheckForm, CheckType, id)

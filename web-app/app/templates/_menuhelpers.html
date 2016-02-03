@@ -1,0 +1,16 @@
+{% macro render_menu(current_menu) %}
+{% for item in current_menu.children recursive %}
+{% if item.visible %}
+{% if item.children %}
+<li>
+<a href="javascript:;" data-toggle="collapse" data-target="#{{ item.name }}"><i class="fa fa-fw fa-arrows-v"></i>{{ item.text }}<i class="fa fa-fw fa-caret-down"></i></a>
+<ul id="{{ item.name }}" class="collapse">
+        {{ loop(item.children) }}
+</ul>
+</li>
+{% else %}
+<li {% if item.active %} class="active"{% endif %}><a href="{{ item.url }}"><i class="fa fa-fw">{{ item.text }}</i></a></li>
+{% endif %}
+{% endif %}
+{% endfor %}
+{% endmacro %}

@@ -9,8 +9,8 @@ from app.auth.utils import user_admin
 
 app = Blueprint('contacts_type', __name__, url_prefix = '/contacts_type')
 @app.route('/')
-@register_menu(app, '.contactstype.contacttype_list', 'List', visible_when=user_admin)
-@register_menu(app, '.contactstype.', 'Contact Types', visible_when=user_admin)
+@register_menu(app, '.admin.contactstype.contacttype_list', 'List', visible_when=user_admin)
+@register_menu(app, '.admin.contactstype.', 'Contact Types', visible_when=user_admin)
 @fresh_login_required
 def contacttype_list():
     contacts = ContactType().getAll()
@@ -18,7 +18,7 @@ def contacttype_list():
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
 @app.route('/edit/<int:id>', methods = [ 'POST', 'GET' ])
-@register_menu(app, '.contactstype.contacttype_edit', 'Add', visible_when=user_admin)
+@register_menu(app, '.admin.contactstype.contacttype_edit', 'Add', visible_when=user_admin)
 @fresh_login_required
 def contacttype_edit(id = None):
     form = ContactForm(request.form)
