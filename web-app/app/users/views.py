@@ -8,7 +8,7 @@ from flask_menu import Menu, register_menu
 from app.auth.utils import user_admin
 
 
-app = Blueprint('users', __name__, url_prefix = '/users')
+app = Blueprint('users', __name__, url_prefix = '/admin/users')
 @app.route('/')
 @register_menu(app, '.admin.users.users_list', 'List', visible_when=user_admin)
 @register_menu(app, '.admin.users', 'Users', visible_when=user_admin)

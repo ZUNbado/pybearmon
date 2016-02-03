@@ -40,5 +40,5 @@ app.register_blueprint(contacts_view)
 from app.report.views import app as report_view
 app.register_blueprint(report_view)
 
-
-
+from app.admin.views import app as admin_view
+app.register_blueprint(admin_view)

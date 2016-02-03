@@ -9,7 +9,7 @@ from flask.ext.login import fresh_login_required
 from app.auth.utils import user_admin
 
 
-app = Blueprint('checks_type', __name__, url_prefix = '/checks_type')
+app = Blueprint('checks_type', __name__, url_prefix = '/admin/checks_type')
 @app.route('/')
 @register_menu(app, '.admin.checkstype.checktype_list', 'List', visible_when=user_admin)
 @register_menu(app, '.admin.checkstype.', 'Check Types', visible_when=user_admin)

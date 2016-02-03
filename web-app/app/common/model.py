@@ -39,6 +39,10 @@ class Model(object):
         items = self.db.getAll(self.table)
         return items if items else []
 
+    def count(self):
+        item = self.db.getOne(self.table, [ 'COUNT(*) AS count' ])
+        return item.count
+
 class UserModel(Model):
     usercol = 'user_id'
 
