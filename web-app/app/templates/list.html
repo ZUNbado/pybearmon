@@ -1,13 +1,16 @@
 {% extends "base.html" %}
 {% block body %}
 <div class="table-responsive">
-    <table class="table">
+        <table class="table table-bordered table-hover table-striped">
+                <thead>
             <tr>
                     {% for column in columns %}
                     <th>{{ column|capitalize }}</th>
                     {% endfor %}
                     <th>Actions</th>
             </tr>
+            </thead>
+            <tbody>
             {% for item in items %}
             <tr>
                     {% for column in columns %}
@@ -21,6 +24,7 @@
                     </td>
             </tr>
             {% endfor %}
+            </tbody>
     </table>
 </div>
 {% endblock %}
