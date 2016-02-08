@@ -42,3 +42,6 @@ app.register_blueprint(report_view)
 
 from app.admin.views import app as admin_view
 app.register_blueprint(admin_view)
+
+from app.integrations.telegram.views import app as tg_view
+app.register_blueprint(tg_view)

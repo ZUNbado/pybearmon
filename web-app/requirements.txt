@@ -4,3 +4,4 @@ flask-menu
 flask-wtf
 sshtunnel
 mysql-python
+python-telegram-bot
