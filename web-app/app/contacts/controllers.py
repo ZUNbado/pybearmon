@@ -9,3 +9,10 @@ class Contacts(UserModel):
         where = None if current_user.is_admin else [ '%s = %s' % ( self.usercol, current_user.get_id() ) ]
         items = self.db.leftJoin((self.table, 'contact_type'), ('*', [ 'name AS contact_type' ]), ('type', 'id'), where)
         return items if items else []
+
+    def formList(self):
+        choices = list()
+        for t in self.getAll():
+            choices.append( (t.id, t.name) )
+        return choices
+

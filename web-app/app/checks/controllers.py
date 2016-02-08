@@ -1,5 +1,5 @@
 from app.common.sql import getdb
-from app.common.model import UserModel
+from app.common.model import Model, UserModel
 from flask.ext.login import current_user
 
 class Checks(UserModel):
@@ -16,4 +16,20 @@ class Checks(UserModel):
         else:
             where = [ 'user_id = %s' % user_id ]
         items = self.db.leftJoin((self.table, 'check_type'), ('*', [ 'name AS check_type' ]), ('type', 'id'), where)
+        return items if items else []
+
+    def getAlerts(self, check_id):
+        if check_id:
+            return Alerts().getByCheck(check_id)
+        return list()
+
+class Alerts(Model):
+    table = 'alerts'
+
+    def deleteByCheck(self, check_id):
+        self.db.delete(self.table, ['check_id = %s' % check_id])
+        self.db.commit()
+
+    def getByCheck(self, check_id):
+        items = self.db.getAll(self.table, '*', ['check_id = %s' % check_id])
         return items if items else []

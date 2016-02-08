@@ -6,3 +6,4 @@ class CheckForm(Form):
     type = wtforms.SelectField('Check Type', [wtforms.validators.Required()], coerce = int)
     max_confirmations = wtforms.IntegerField('Confirmations')
     public = wtforms.BooleanField('Is public?')
+    contacts = wtforms.SelectMultipleField('Contacts', coerce = int, choices = list())
