@@ -1,5 +1,4 @@
 from flask import Flask, Blueprint,render_template, request, redirect, url_for, flash
-from app.common.sql import getdb
 from app.common.forms import getFormForModelAttr
 from .forms import CheckForm
 from .controllers import Checks, Alerts
@@ -10,7 +9,6 @@ from flask.ext.login import fresh_login_required
 import urllib
 
 from app.auth.utils import user_logged, user_admin
-from app.check_type.controllers import CheckType, CheckAttribute
 
 app = Blueprint('checks', __name__, url_prefix = '/checks')
 @app.route('/')
@@ -30,6 +28,7 @@ def checks_edit(id = None):
     form = getFormForModelAttr(CheckForm, Checks, CheckAttribute, id, 'checktype_id')
     form.type.choices = CheckType().formList()
     form.contacts.choices = Contacts().formList()
+    print form.data
     if form.validate_on_submit():
         data = dict()
         for field in form:

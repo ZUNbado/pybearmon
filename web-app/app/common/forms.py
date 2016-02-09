@@ -1,6 +1,11 @@
 import wtforms
 from flask import request
 import urlparse
+from flask.ext.wtf import Form as FForm
+
+class SubmitForm(FForm):
+    submit = wtforms.SubmitField('Save')
+    submit_return = wtforms.SubmitField('Save and return')
 
 def getFormForModel(Form, Model, id):
     form = Form(request.form)

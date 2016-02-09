@@ -1,7 +1,7 @@
-from flask.ext.wtf import Form
 import wtforms
+from app.common.forms import SubmitForm
 
-class ContactForm(Form):
+class ContactForm(SubmitForm):
     name = wtforms.TextField('Name', [wtforms.validators.Required(), wtforms.validators.length(min=4)])
 
 choices = [
@@ -11,7 +11,7 @@ choices = [
         ('PasswordField', 'Password'),
         ]
 
-class AttributeForm(Form):
+class AttributeForm(SubmitForm):
     name = wtforms.TextField('Name', [wtforms.validators.Required()])
     type = wtforms.SelectField('Type', choices = choices)
     required = wtforms.BooleanField('Required')

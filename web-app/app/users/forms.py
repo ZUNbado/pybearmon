@@ -1,6 +1,7 @@
 import wtforms
+from app.common.forms import SubmitForm
 
-class UserForm(wtforms.Form):
+class UserForm(SubmitForm):
     name = wtforms.TextField('User Name', [wtforms.validators.Required(), wtforms.validators.length(min=4)])
     email = wtforms.TextField('Email', [wtforms.validators.Required(), wtforms.validators.length(min=4)])
     password = wtforms.PasswordField('Password')

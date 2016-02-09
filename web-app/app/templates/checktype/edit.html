@@ -1,14 +1,7 @@
 {% extends "base.html" %}
-{% from "_formhelpers.html" import render_field %}
+{% import "form_macros.html" as macros_form %}
 {% block body %}
-<form method="POST">
-        <dl>
-                {% for field in form %}
-                {{ render_field(field) }}
-                {% endfor %}
-        </dl>
-    <button type="submit" class="btn btn-default">Submit</button>
-</form>
+{{ macros_form.render_form(form, submits = [form.submit, form.submit_return ]) }}
 {% if attrs %}
 <h3>Current attributes of check type</h3>
 <div class="table-responsive">
