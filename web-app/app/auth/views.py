@@ -22,7 +22,7 @@ def login():
             return redirect(url_for('index'))
         else:
             flash('Credentials not valid')
-    return render_template('edit.html', form = form)
+    return render_template('form.html', form = form)
 
 @app.route('/register', methods = [ 'POST', 'GET' ])
 def register():
@@ -33,7 +33,7 @@ def register():
             if user.is_authenticated:
                 login_user(user)
                 return redirect(url_for('index'))
-    return render_template('edit.html', form = form)
+    return render_template('form.html', form = form)
 
 @app.route('/logout')
 def logout():
