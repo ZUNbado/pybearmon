@@ -1,15 +1,9 @@
 from flask import Flask, flash, Blueprint, request, redirect, url_for, render_template
-from flask.ext.menu import Menu, register_menu
 from flask.ext.login import login_required, login_user, current_user, logout_user
-
-from .utils import user_logged, user_anonymous
-
 from app.users.controllers import Users, LoginUser
 from .forms import LoginForm, RegisterForm
 
-
 app = Blueprint('auth', __name__, url_prefix = '/auth')
-
 
 @app.route('/login', methods = [ 'POST', 'GET' ])
 def login():
@@ -18,10 +12,10 @@ def login():
         user = LoginUser(email = form.email.data, password = form.password.data)
         if user.is_authenticated:
             login_user(user)
-            flash('Logged in successfully')
+            flash('Logged in successfully', 'success')
             return redirect(url_for('index'))
         else:
-            flash('Credentials not valid')
+            flash('Credentials not valid', 'danger')
     return render_template('form.html', form = form)
 
 @app.route('/register', methods = [ 'POST', 'GET' ])
@@ -38,5 +32,5 @@ def register():
 @app.route('/logout')
 def logout():
     logout_user()
+    flash('Logged out successfully', 'success')
     return redirect(url_for('index'))
-

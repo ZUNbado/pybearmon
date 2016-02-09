@@ -28,7 +28,6 @@ def checks_edit(id = None):
     form = getFormForModelAttr(CheckForm, Checks, CheckAttribute, id, 'checktype_id')
     form.type.choices = CheckType().formList()
     form.contacts.choices = Contacts().formList()
-    print form.data
     if form.validate_on_submit():
         data = dict()
         for field in form:
@@ -44,12 +43,14 @@ def checks_edit(id = None):
             for contact in form.contacts.data:
                 Alerts().save(check_id = check, contact_id = contact)
             flash('Check saved', 'success')
-            return redirect(url_for('.checks_edit', id = check))
+            if form.submit_return.data:
+                return redirect(url_for('.checks_list'))
+            else:
+                return redirect(url_for('.checks_edit', id = check))
     if id:
         contacts = Checks().getAlerts(id)
         form.contacts.process_data([contact.contact_id for contact in contacts])
     return render_template('edit.html', form = form)
-
 
 @app.route('/delete/<int:id>')
 @fresh_login_required
@@ -57,4 +58,5 @@ def checks_delete(id):
     for alert in Alerts().getByCheck(id):
         Alerts().delete(alert)
     Checks().delete(id)
+    flash('Check deleted', 'success')
     return redirect(url_for('.checks_list'))
