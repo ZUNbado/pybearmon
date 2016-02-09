@@ -90,3 +90,19 @@ def http(data, context):
 
 	if result['status'] == 'fail' and 'message' in result:
 		print "alert_http: error: " + result['message']
+
+
+def telegram_sender(data, context):
+	'''
+	Notifies a web hook over HTTP regarding alert.
+	All context parameters are sent, via GET.
+
+	data['url']: the target web hook
+	context: encoded as GET parameters
+	'''
+	if 'token' not in data and 'chat_id' not in data:
+		util.die('telegram_sender: missing token or chat_id')
+
+        from telegram import Bot
+        bot = Bot(data['token'])
+        bot.sendMessage(chat_id=data['chat_id'], text=context['message'])

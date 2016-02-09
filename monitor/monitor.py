@@ -45,7 +45,13 @@ class MonitorPool:
 		if update_result.rowcount == 1:
 			# we still had the lock at the point where status was toggled
 			# then, send the alert
-			alert_result = database.query("SELECT contacts.id, contacts.type, contacts.data FROM contacts, alerts WHERE contacts.id = alerts.contact_id AND alerts.check_id = %s AND alerts.type IN ('both', %s)", (check_id, updown))
+			alert_result = database.query('''
+                        SELECT contacts.id, contact_type.name AS type, contacts.data 
+                        FROM contacts
+                        INNER JOIN alerts ON contacts.id = alerts.contact_id
+                        INNER JOIN contact_type ON contact_type.id = contacts.type
+                        AND alerts.check_id = %s AND alerts.type IN ('both', %s)
+                        ''', (check_id, updown))
 
 			for alert_row in alert_result.fetchall():
 				safe_print("[%s] ... alerting contact %d", (thread_name, alert_row['id']))
@@ -76,7 +82,7 @@ class MonitorPool:
 			check_id, check_name, check_type, check_data, status, max_confirmations, confirmations, lock_uid = self.q.get()
 
 			safe_print("[%s] processing check %d: calling checks.%s", (thread_name, check_id, check_type))
-			check_result = checks.run_check(check_type, util.decode(check_data))
+			check_result = checks.run_check(check_type, util.decode(check_data), check_id)
 
 			safe_print("[%s] check %d result: %s", (thread_name, check_id, str(check_result)))
 

@@ -6,15 +6,15 @@ def extract(data, key, default):
 	else:
 		return default
 
-def run_check(name, data):
+def run_check(name, data, check_id):
 	import checks
 
 	try:
-		return getattr(checks, name)(data)
+		return getattr(checks, name)(data, check_id)
 	except Exception as e:
 		return {'status': 'fail', 'message': 'exception: ' + str(e)}
 
-def http_contains(data):
+def http_contains(data, check_id = None):
 	# keys: substring, url (also http_helper params)
 	if 'substring' not in data or 'url' not in data:
 		util.die('checks.http_contains: missing substring')
@@ -28,7 +28,7 @@ def http_contains(data):
 	else:
 		return {'status': 'fail', 'message': "target [%s] does not contain string [%s]" % (data['url'], data['substring'])}
 
-def http_helper(data):
+def http_helper(data, check_id = None):
 	from config import config
 
 	# keys: url, timeout
@@ -46,7 +46,7 @@ def http_helper(data):
 	except httplib2.HttpLib2Error as e:
 		return {'status': 'fail', 'message': e.strerror}
 
-def http_status(data):
+def http_status(data, check_id = None):
 	# keys: status, url (also http_helper params)
 	if 'status' not in data or 'url' not in data:
 		util.die('checks.http_status: missing status')
@@ -60,11 +60,11 @@ def http_status(data):
 	else:
 		return {'status': 'fail', 'message': "target [%s] returned unexpected status [%s], expected [%s]" % (data['url'], str(result['code']), data['status'])}
 
-def http_ok(data):
+def http_ok(data, check_id = None):
 	data['status'] = '200'
 	return http_status(data)
 
-def ssl_expire(data):
+def ssl_expire(data, check_id):
 	# keys: hostname, optional port (default 443), days (default 7), and timeout (default 10)
 	from config import config
 
@@ -102,7 +102,7 @@ def ssl_expire(data):
 	else:
 		return {'status': 'success'}
 
-def ping(data):
+def ping(data, check_id):
 	# keys: target
 	if 'target' not in data:
 		util.die('checks.ping: missing target')
@@ -117,7 +117,7 @@ def ping(data):
 	else:
 		return {'status': 'success'}
 
-def tcp_connect(data):
+def tcp_connect(data, check_id):
 	# keys: target, port; optional: timeout
 	if 'target' not in data or 'port' not in data:
 		util.die('checks.tcp_connect: missing target or port')
@@ -133,14 +133,12 @@ def tcp_connect(data):
 	sock.close()
 	return {'status': 'success'}
 
-def telegram_poller(data):
+def telegram_poller(data, check_id):
     if 'token' not in data:
         util.die('checks.telegram_poller: missing token')
 
     token = data['token']
-    update_id = extract(data, 'update_id', 0)
-    chat_id = extract(data, 'chat_id', None)
-    print data
+    update_id = int(extract(data, 'update_id', 0))
 
     from telegram import Bot
     from common.sql import getdb
@@ -150,19 +148,26 @@ def telegram_poller(data):
     db = getdb()
 
     bot = Bot(token)
+    if not bot: return { 'status' : 'fail' }
     updates = bot.getUpdates(offset = update_id)
     for update in updates:
-        if update.update_id > update_id: update_id = update.update_id
+        if int(update.update_id) >= update_id: update_id = int(update.update_id)
         chat_id =  update.message.chat_id
         if '/' in update.message.text and ' ' in update.message.text:
-            cmd, data = update.message.text.split(' ', 1)
+            cmd, msg_data = update.message.text.split(' ', 1)
             if cmd == '/start':
-                contact = db.getOne('contacts', '*', ('id = %s', data))
-                print contact.data
-                data_decoded = urlparse.parse_qs(contact.data)
-                data_decoded['token'] = data_decoded['token'][0]
-                data_decoded['chat_id'] = chat_id
-                print data_decoded
-                data_encoded = urllib.urlencode(data_decoded)
-                print data_encoded
+                contact = db.getOne('contacts', '*', ('id = %s', msg_data))
+                if contact:
+                    data_decoded = urlparse.parse_qs(contact.data)
+                    data_decoded['token'] = data_decoded['token'][0]
+                    data_decoded['chat_id'] = chat_id
+                    data_encoded = urllib.urlencode(data_decoded)
+                    db.update('contacts', dict(data = data_encoded), ('id = %s', [ contact.id ]))
+                    db.commit()
+
+    check = db.getOne('checks', '*', ('id = %s', [ check_id] ))
+    check_data = urlparse.parse_qs(check.data)
+    check_data = urllib.urlencode(dict( token = check_data['token'][0], update_id = update_id + 1))
+    db.update('checks', dict( data = check_data ), ('id = %s', [ check_id ]))
+    db.commit()
     return {'status': 'success'}
