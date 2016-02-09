@@ -40,7 +40,8 @@ def checks_edit(id = None):
         check = Checks().save(id = id, name = form.name.data, type = form.type.data, data = data, public = form.public.data, max_confirmations = form.max_confirmations.data)
         if check or id:
             check = id
-            Alerts().deleteByCheck(check)
+            if type(check) == int:
+                Alerts().deleteByCheck(check)
             for contact in form.contacts.data:
                 Alerts().save(check_id = check, contact_id = contact)
             return redirect(url_for('.checks_edit', id = check))

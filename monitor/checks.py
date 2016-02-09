@@ -132,3 +132,37 @@ def tcp_connect(data):
 	sock.connect((target, port))
 	sock.close()
 	return {'status': 'success'}
+
+def telegram_poller(data):
+    if 'token' not in data:
+        util.die('checks.telegram_poller: missing token')
+
+    token = data['token']
+    update_id = extract(data, 'update_id', 0)
+    chat_id = extract(data, 'chat_id', None)
+    print data
+
+    from telegram import Bot
+    from common.sql import getdb
+    import urlparse
+    import urllib
+
+    db = getdb()
+
+    bot = Bot(token)
+    updates = bot.getUpdates(offset = update_id)
+    for update in updates:
+        if update.update_id > update_id: update_id = update.update_id
+        chat_id =  update.message.chat_id
+        if '/' in update.message.text and ' ' in update.message.text:
+            cmd, data = update.message.text.split(' ', 1)
+            if cmd == '/start':
+                contact = db.getOne('contacts', '*', ('id = %s', data))
+                print contact.data
+                data_decoded = urlparse.parse_qs(contact.data)
+                data_decoded['token'] = data_decoded['token'][0]
+                data_decoded['chat_id'] = chat_id
+                print data_decoded
+                data_encoded = urllib.urlencode(data_decoded)
+                print data_encoded
+    return {'status': 'success'}
