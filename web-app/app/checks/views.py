@@ -1,4 +1,4 @@
-from flask import Flask, Blueprint,render_template, request, redirect, url_for
+from flask import Flask, Blueprint,render_template, request, redirect, url_for, flash
 from app.common.sql import getdb
 from app.common.forms import getFormForModelAttr
 from .forms import CheckForm
@@ -44,6 +44,7 @@ def checks_edit(id = None):
                 Alerts().deleteByCheck(check)
             for contact in form.contacts.data:
                 Alerts().save(check_id = check, contact_id = contact)
+            flash('Check saved', 'success')
             return redirect(url_for('.checks_edit', id = check))
     if id:
         contacts = Checks().getAlerts(id)
