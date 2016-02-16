@@ -6,8 +6,13 @@ class Checks(UserModel):
     table = 'checks'
 
     def getAll(self):
-        where = None if current_user.is_admin else [ '%s = %s' % ( self.usercol, current_user.get_id() ) ]
-        items = self.db.leftJoin((self.table, 'check_type'), ('*', [ 'name AS check_type' ]), ('type', 'id'), where)
+        where = '' if current_user.is_admin else [ 'WHERE %s = %s' % ( self.usercol, current_user.get_id() ) ]
+        items = self.db.query_named('''
+        SELECT checks.*,check_type.name AS check_type,users.name AS username
+        FROM checks
+        INNER JOIN check_type ON check_type.id = checks.type
+        INNER JOIN users ON users.id = checks.user_id
+        %s''' % where)
         return items if items else []
 
     def getReport(self, user_id, public):

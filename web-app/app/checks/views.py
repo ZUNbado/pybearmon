@@ -5,7 +5,7 @@ from .controllers import Checks, Alerts
 from app.check_type.controllers import CheckType, CheckAttribute
 from app.contacts.controllers import Contacts
 from flask_menu import Menu, register_menu
-from flask.ext.login import fresh_login_required
+from flask.ext.login import fresh_login_required, current_user
 import urllib
 
 from app.auth.utils import user_logged, user_admin
@@ -18,6 +18,8 @@ app = Blueprint('checks', __name__, url_prefix = '/checks')
 def checks_list():
     checks = Checks().getAll()
     columns = [ 'name', 'check_type', 'status', 'last_checked', 'confirmations' ]
+    if current_user.is_admin:
+        columns.append('username')
     return render_template('list.html', items = checks, columns = columns, endpoint = 'checks' )
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])

@@ -5,7 +5,7 @@ from .forms import ContactForm
 from .controllers import Contacts
 from app.contact_type.controllers import ContactType, ContactAttribute
 from flask_menu import Menu, register_menu
-from flask.ext.login import fresh_login_required
+from flask.ext.login import fresh_login_required, current_user
 import urllib
 
 from app.auth.utils import user_logged, user_admin
@@ -19,6 +19,8 @@ app = Blueprint('contacts', __name__, url_prefix = '/contacts')
 def contacts_list():
     contacts = Contacts().getAll()
     columns = [ 'name', 'contact_type' ]
+    if current_user.is_admin:
+        columns.append('username')
     return render_template('list.html', items = contacts, columns = columns, endpoint = 'contacts' )
 
 @app.route('/edit', methods = [ 'POST', 'GET' ])
