@@ -27,3 +27,9 @@ def public_list(username):
 
     checks = Checks().getReport(user.id, public)
     return render_template('report/report.html', checks = checks )
+
+
+@app.route('/')
+def index():
+    list_checks = Checks().filter(public = 1, user_id = 1)
+    return render_template('index.html', checks = list_checks if list_checks else [] )
