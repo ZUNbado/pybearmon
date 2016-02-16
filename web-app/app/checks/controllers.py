@@ -13,7 +13,7 @@ class Checks(UserModel):
             if w:
                 wheres.append(w)
 
-        where_sql = 'WHERE %s' % (' AND '.join(wheres))
+        where_sql = 'WHERE %s' % (' AND '.join(wheres)) if len(wheres) > 0 else ''
         
         items = self.db.query_named('''
         SELECT checks.*,check_type.name AS check_type,users.name AS username
