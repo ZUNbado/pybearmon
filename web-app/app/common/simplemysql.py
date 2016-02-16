@@ -180,7 +180,7 @@ class SimpleMysql(object):
 			else:
 				raise
 		except:
-			print("Query failed")
+			print("Query failed: %s" % self.cur._last_executed)
 			raise
 
 		return self.cur
