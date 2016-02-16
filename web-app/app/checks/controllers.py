@@ -5,22 +5,30 @@ from flask.ext.login import current_user
 class Checks(UserModel):
     table = 'checks'
 
-    def getAll(self):
-        where = '' if current_user.is_admin else [ 'WHERE %s = %s' % ( self.usercol, current_user.get_id() ) ]
+    def getAll(self, where = None):
+        where_admin = None if current_user.is_admin else '%s = %s' % ( self.usercol, current_user.get_id() )
+
+        wheres = list()
+        for w in [ where, where_admin ]:
+            if w:
+                wheres.append(w)
+
+        where_sql = 'WHERE %s' % (' AND '.join(wheres))
+        
         items = self.db.query_named('''
         SELECT checks.*,check_type.name AS check_type,users.name AS username
         FROM checks
         INNER JOIN check_type ON check_type.id = checks.type
         INNER JOIN users ON users.id = checks.user_id
-        %s''' % where)
+        %s''' % where_sql)
         return items if items else []
 
+
     def getReport(self, user_id, public):
+        where = dict(user_id = user_id)
         if public:
-            where = [ 'user_id = %s AND public = 1' % user_id ]
-        else:
-            where = [ 'user_id = %s' % user_id ]
-        items = self.db.leftJoin((self.table, 'check_type'), ('*', [ 'name AS check_type' ]), ('type', 'id'), where)
+            where['user_id'] = user_id
+        items = self.filter(**where)
         return items if items else []
 
     def getAlerts(self, check_id):

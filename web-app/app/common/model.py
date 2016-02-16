@@ -35,9 +35,15 @@ class Model(object):
             return True
         return False
 
-    def getAll(self):
-        items = self.db.getAll(self.table)
+    def getAll(self, where = None):
+        items = self.db.getAll(self.table, '*', where)
         return items if items else []
+
+    def filter(self, **kwargs):
+        wheres = list()
+        for param, value in kwargs.items():
+            wheres.append('%s = %s' % ( param, value ))
+        return self.getAll(' AND '.join(wheres))
 
     def count(self):
         item = self.db.getOne(self.table, [ 'COUNT(*) AS count' ])
