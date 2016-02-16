@@ -4,27 +4,11 @@ from flask.ext.login import current_user
 
 class Checks(UserModel):
     table = 'checks'
-
-    def getAll(self, where = None):
-        where_admin = None
-        if current_user.is_authenticated and current_user.is_admin:
-            where_admin = '%s = %s' % ( self.usercol, current_user.get_id() )
-
-        wheres = list()
-        for w in [ where, where_admin ]:
-            if w:
-                wheres.append(w)
-
-        where_sql = 'WHERE %s' % (' AND '.join(wheres)) if len(wheres) > 0 else ''
-        
-        items = self.db.query_named('''
-        SELECT checks.*,check_type.name AS check_type,users.name AS username
-        FROM checks
-        INNER JOIN check_type ON check_type.id = checks.type
-        INNER JOIN users ON users.id = checks.user_id
-        %s''' % where_sql)
-        return items if items else []
-
+    fields = '*'
+    foreign_keys = [
+            dict(fields = ['name AS check_type'], table = 'check_type', join = 'INNER', on = 'check_type.id = checks.type'),
+            dict(fields = ['name AS username'], table = 'users', join = 'INNER', on = 'users.id = checks.user_id'),
+            ]
 
     def getReport(self, user_id, public):
         where = dict(user_id = user_id)

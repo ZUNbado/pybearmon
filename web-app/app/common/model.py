@@ -3,7 +3,9 @@ from flask.ext.login import current_user
 
 class Model(object):
     table = None
+    fields = '*'
     primary_key = 'id'
+    foreign_keys = list()
 
     def __init__(self):
         self.db = getdb()
@@ -35,8 +37,44 @@ class Model(object):
             return True
         return False
 
+    def parse_fields(self, fields, table):
+        if type(fields) == str:
+            fields = fields.split(',')
+
+        fields_str = ''
+        for field in fields:
+            fields_str += '%s.%s' % (table, field)
+        return fields_str 
+
     def getAll(self, where = None):
-        items = self.db.getAll(self.table, '*', where)
+        if where:
+            where = 'WHERE %s' % where
+        else:
+            where = ''
+                
+        select = list()
+        select.append( self.parse_fields(self.fields, self.table) )
+        
+        joins = list()
+        for foreign in self.foreign_keys:
+            fields = foreign.get('fields', None)
+            table = foreign.get('table', None)
+            join = foreign.get('join', 'LEFT')
+            on = foreign.get('on', None)
+            
+            if table:
+                if fields:
+                    select.append( self.parse_fields(fields, table))
+                    
+                join = '%s JOIN %s' % (join, table)
+                if on: 
+                    join += ' ON %s' % on
+                joins.append(join)
+
+
+        query = 'SELECT %s FROM %s %s %s' % (','.join(select), self.table, '\n'.join(joins), where)
+
+        items = self.db.query_named(query)
         return items if items else []
 
     def filter(self, **kwargs):
@@ -49,6 +87,12 @@ class Model(object):
         item = self.db.getOne(self.table, [ 'COUNT(*) AS count' ])
         return item.count
 
+    def formList(self, index = 'id', description = 'name'):
+        choices = list()
+        for t in self.getAll():
+            choices.append( ( getattr(t, index), getattr(t,description) ) )
+        return choices
+
 class UserModel(Model):
     usercol = 'user_id'
 
@@ -57,7 +101,15 @@ class UserModel(Model):
             kwargs['user_id'] = current_user.get_id()
         return super(UserModel, self).save(id, **kwargs)
 
-    def getAll(self):
-        where = None if current_user.is_admin else [ '%s = %s' % ( self.usercol, current_user.get_id() ) ]
-        items = self.db.getAll(self.table, '*',  where)
-        return items if items else []
+    def getAll(self, where = ''):
+        where_admin = None 
+        if current_user.is_authenticated and current_user.is_admin:
+            where_admin = '%s = %s' % ( self.usercol, current_user.get_id() )
+        
+        wheres = list()
+        for w in [ where, where_admin ]:
+            if w:
+                wheres.append(w)
+        
+        where_sql = '%s' % (' AND '.join(wheres)) if len(wheres) > 0 else ''
+        return super(UserModel, self).getAll(where_sql)
