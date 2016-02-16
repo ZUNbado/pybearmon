@@ -6,7 +6,9 @@ class Checks(UserModel):
     table = 'checks'
 
     def getAll(self, where = None):
-        where_admin = None if current_user.is_admin else '%s = %s' % ( self.usercol, current_user.get_id() )
+        where_admin = None
+        if current_user.is_authenticated and current_user.is_admin:
+            where_admin = '%s = %s' % ( self.usercol, current_user.get_id() )
 
         wheres = list()
         for w in [ where, where_admin ]:

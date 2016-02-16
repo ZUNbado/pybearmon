@@ -13,7 +13,7 @@ def login():
         if user.is_authenticated:
             login_user(user)
             flash('Logged in successfully', 'success')
-            return redirect(url_for('index'))
+            return redirect(url_for('report.index'))
         else:
             flash('Credentials not valid', 'danger')
     return render_template('form.html', form = form)
@@ -26,11 +26,11 @@ def register():
             user = LoginUser(email = form.email.data, password = form.password.data)
             if user.is_authenticated:
                 login_user(user)
-                return redirect(url_for('index'))
+                return redirect(url_for('report.index'))
     return render_template('form.html', form = form)
 
 @app.route('/logout')
 def logout():
     logout_user()
     flash('Logged out successfully', 'success')
-    return redirect(url_for('index'))
+    return redirect(url_for('report.index'))
