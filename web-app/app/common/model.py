@@ -47,7 +47,8 @@ class UserModel(Model):
     usercol = 'user_id'
 
     def save(self, id, **kwargs):
-        kwargs['user_id'] = current_user.get_id()
+        if not current_user.is_admin:
+            kwargs['user_id'] = current_user.get_id()
         return super(UserModel, self).save(id, **kwargs)
 
     def getAll(self):
